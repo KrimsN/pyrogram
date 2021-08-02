@@ -29,7 +29,7 @@ from configparser import ConfigParser
 from hashlib import sha256
 from importlib import import_module
 from pathlib import Path
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Callable
 
 import pyrogram
 from pyrogram import raw
@@ -172,6 +172,10 @@ class Client(Methods, Scaffold):
             Pass True to hide the password when typing it during the login.
             Defaults to False, because ``getpass`` (the library used) is known to be problematic in some
             terminal environments.
+            
+        phone_code_handler (``function``, *optional*):
+            Async function to catch code without console input
+            Defaults it is pyrogram.utils.ainput
     """
 
     def __init__(
@@ -199,7 +203,8 @@ class Client(Methods, Scaffold):
         no_updates: bool = None,
         takeout: bool = None,
         sleep_threshold: int = Session.SLEEP_THRESHOLD,
-        hide_password: bool = False
+        hide_password: bool = False,
+        phone_code_handler: Callable = None
     ):
         super().__init__()
 
@@ -228,6 +233,7 @@ class Client(Methods, Scaffold):
         self.takeout = takeout
         self.sleep_threshold = sleep_threshold
         self.hide_password = hide_password
+        self.phone_code_handler = phone_code_handler
 
         self.executor = ThreadPoolExecutor(self.workers, thread_name_prefix="Handler")
 
@@ -322,7 +328,10 @@ class Client(Methods, Scaffold):
 
         while True:
             if not self.phone_code:
-                self.phone_code = await ainput("Enter confirmation code: ")
+                if not phone_code_handler:
+                    self.phone_code = await ainput("Enter confirmation code: ")
+                else:
+                    self.phone_code = await phone_code_handler()
 
             try:
                 signed_in = await self.sign_in(self.phone_number, sent_code.phone_code_hash, self.phone_code)
