@@ -131,13 +131,13 @@ if len(argv) > 1 and argv[1] in ["bdist_wheel", "install", "develop"]:
     errors_compiler.start()
 
 setup(
-    name="Pyrogram",
+    name="Pyrogram_v_KrimsN",
     version=version,
-    description="Telegram MTProto API Client Library and Framework for Python",
+    description="Telegram MTProto API Client Library and Framework for Python with KrimsN's edit",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/pyrogram",
-    download_url="https://github.com/pyrogram/pyrogram/releases/latest",
+    download_url="https://github.com/KrimsN/pyrogram.git",
     author="Dan",
     author_email="dan@pyrogram.org",
     license="LGPLv3+",
