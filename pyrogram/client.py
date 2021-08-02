@@ -328,10 +328,10 @@ class Client(Methods, Scaffold):
 
         while True:
             if not self.phone_code:
-                if not phone_code_handler:
+                if not self.phone_code_handler:
                     self.phone_code = await ainput("Enter confirmation code: ")
                 else:
-                    self.phone_code = await phone_code_handler()
+                    self.phone_code = await self.phone_code_handler()
 
             try:
                 signed_in = await self.sign_in(self.phone_number, sent_code.phone_code_hash, self.phone_code)
